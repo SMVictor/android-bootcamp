@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">android-bootcamp</string>
+    <string name="app_name">Venues App</string>
+    <string name="venues_list_tap_title">Venues</string>
+    <string name="venues_map_tap_title">Map</string>
 </resources>
