@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.practice.project.android_bootcamp.model.Venue;
+
 import java.util.List;
 
 public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueAdapterViewHolder> {
 
-    private List<String> mVenueData;
+    private List<Venue> mVenueData;
 
     public VenueAdapter() {
     }
@@ -41,7 +43,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueAdapter
 
     @Override
     public void onBindViewHolder(VenueAdapterViewHolder venueAdapterViewHolder, int position) {
-        String venueForThisPosition = mVenueData.get(position);
+        String venueForThisPosition = mVenueData.get(position).getName();
         venueAdapterViewHolder.mVenueTextView.setText(venueForThisPosition);
     }
 
@@ -51,7 +53,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueAdapter
         return mVenueData.size();
     }
 
-    public void setVenueData(List<String> venueData) {
+    public void setVenueData(List<Venue> venueData) {
         mVenueData = venueData;
         notifyDataSetChanged();
     }
