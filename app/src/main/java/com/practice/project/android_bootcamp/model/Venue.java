@@ -6,11 +6,10 @@ import java.util.List;
 
 public class Venue {
 
-    private int id;
+    private String id;
     private String address;
     private String name;
     private Image photo;
-    private double score;
     private double longitude;
     private double latitude;
     private Category category;
@@ -18,23 +17,22 @@ public class Venue {
     public Venue() {
     }
 
-    public Venue(int id, String address, String name, Image photo, double score, double longitude,
+    public Venue(String id, String address, String name, Image photo, double longitude,
                  double latitude, Category category) {
         this.id = id;
         this.address = address;
         this.name = name;
         this.photo = photo;
-        this.score = score;
         this.longitude = longitude;
         this.latitude = latitude;
         this.category = category;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -60,14 +58,6 @@ public class Venue {
 
     public void setPhoto(Image photo) {
         this.photo = photo;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
     }
 
     public double getLongitude() {

@@ -4,24 +4,24 @@ import java.util.List;
 
 public class Category {
 
-    private int id;
+    private String id;
     private String name;
     private List<Venue> venues;
 
     public Category() {
     }
 
-    public Category(int id, String name, List<Venue> venues) {
+    public Category(String id, String name, List<Venue> venues) {
         this.id = id;
         this.name = name;
         this.venues = venues;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
