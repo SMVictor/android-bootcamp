@@ -1,11 +1,20 @@
 package com.practice.project.android_bootcamp;
 
+import android.Manifest;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,6 +50,8 @@ public class FragmentList extends Fragment {
     // This variables are used to display the screen objects
     private RecyclerView mRecyclerView;
     private VenueAdapter mVenueAdapter;
+    private Double longitude;
+    private Double latitude;
 
     public FragmentList(){
 
@@ -68,7 +80,8 @@ public class FragmentList extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(getActivity()).get(VenueViewModel.class);
-        model.setContext(getActivity());
+        model.setActivity(getActivity());
+        model.setContext(getContext());
         model.getVenues().observe(this, venues -> {
             mVenueAdapter.setVenueData(venues);
         });

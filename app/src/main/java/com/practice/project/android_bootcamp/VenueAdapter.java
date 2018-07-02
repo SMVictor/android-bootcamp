@@ -39,7 +39,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueAdapter
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         return new VenueAdapterViewHolder(view);
-    }
+}
 
     @Override
     public void onBindViewHolder(VenueAdapterViewHolder venueAdapterViewHolder, int position) {
