@@ -25,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.practice.project.android_bootcamp.model.Venue;
 import com.practice.project.android_bootcamp.viewmodel.VenueViewModel;
@@ -58,7 +59,16 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        this.mMap = googleMap;
+        mMap = googleMap;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Class destinationClass = DetailActivity.class;
+                Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
+                getContext().startActivity(intentToStartDetailActivity);
+                return false;
+            }//Fin del método onMarkerClick
+        });
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             Toast.makeText(getContext(), "Please proceed to make your request again", Toast.LENGTH_LONG).show();

@@ -1,11 +1,13 @@
 package com.practice.project.android_bootcamp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.practice.project.android_bootcamp.model.Venue;
 
@@ -38,7 +40,17 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueAdapter
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        return new VenueAdapterViewHolder(view);
+        VenueAdapterViewHolder venueAdapterViewHolder = new VenueAdapterViewHolder(view);
+
+        venueAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Class destinationClass = DetailActivity.class;
+                Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+                context.startActivity(intentToStartDetailActivity);
+            }
+        });
+        return venueAdapterViewHolder;
 }
 
     @Override
