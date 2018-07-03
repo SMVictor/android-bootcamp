@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.practice.project.android_bootcamp.model.Venue;
 import com.practice.project.android_bootcamp.viewmodel.VenueViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentMap extends SupportMapFragment implements OnMapReadyCallback {
@@ -52,7 +53,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = super.onCreateView(inflater, container, savedInstanceState);
-
+        venues = new ArrayList<Venue>();
         getMapAsync(this);
         return view;
     }
@@ -63,20 +64,20 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Class destinationClass = DetailActivity.class;
-                Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
-                getContext().startActivity(intentToStartDetailActivity);
+                for (int i=0; i<venues.size(); i++){
+                    if (venues.get(i).getId().equalsIgnoreCase((String) marker.getTag())){
+                        Class destinationClass = DetailActivity.class;
+                        Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
+                        intentToStartDetailActivity.putExtra("Venue", venues.get(i));
+                        getContext().startActivity(intentToStartDetailActivity);
+                    }
+                }
                 return false;
             }//Fin del método onMarkerClick
         });
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            Toast.makeText(getContext(), "Please proceed to make your request again", Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            locationStart();
-        }
+
+        locationStart();
+
         model = ViewModelProviders.of(getActivity()).get(VenueViewModel.class);
         model.setContext(getContext());
         model.setActivity(getActivity());
@@ -87,41 +88,37 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     }
     public void setInitialLocationMap()
     {
-        if (longitude != null && latitude != null){
-            LatLng initialPosition = new LatLng(latitude, longitude);
-            this.mMap.addMarker(new MarkerOptions()
-                    .position(initialPosition)
-                    .title("Current Location")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))).setTag(0);
-            this.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition,16));
-        }
+        LatLng initialPosition = new LatLng(latitude, longitude);
+        mMap.addMarker(new MarkerOptions()
+                .position(initialPosition)
+                .title("Current Location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))).setTag("Current Location");
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition,16));
     }
     public void setPointsInMap()
     {
-        if(venues != null){
-            if(venues.size() > 1)
-            {
-                this.urlAPIDirections += "&waypoints=";
+        if(venues.size() > 1)
+        {
+            this.urlAPIDirections += "&waypoints=";
 
-                for(int i = 0; i < venues.size(); i++)
-                {
-                    this.mMap.addMarker(new MarkerOptions()
-                            .title(venues.get(i).getName())
-                            .position(new LatLng(venues.get(i).getLatitude(),venues.get(i).getLongitude())))
-                            .setTag(venues.get(i).getId());
-                    this.urlAPIDirections += venues.get(i).getLatitude() + "," + venues.get(i).getLongitude();
-                    if(i != (venues.size()-1)){this.urlAPIDirections += "|";}
-                }
-            }
-            else
+            for(int i = 0; i < venues.size(); i++)
             {
                 this.mMap.addMarker(new MarkerOptions()
-                        .title(venues.get(0).getName())
-                        .position(new LatLng(venues.get(0).getLatitude(),venues.get(0).getLongitude())))
-                        .setTag(venues.get(0).getId());
+                        .title(venues.get(i).getName())
+                        .position(new LatLng(venues.get(i).getLatitude(),venues.get(i).getLongitude())))
+                        .setTag(venues.get(i).getId());
+                this.urlAPIDirections += venues.get(i).getLatitude() + "," + venues.get(i).getLongitude();
+                if(i != (venues.size()-1)){this.urlAPIDirections += "|";}
             }
-            this.urlAPIDirections += "&key=AIzaSyAftKCowaKEkGSvRLV0ZrANIlDDKAOaQgc";
         }
+        else
+        {
+            this.mMap.addMarker(new MarkerOptions()
+                    .title(venues.get(0).getName())
+                    .position(new LatLng(venues.get(0).getLatitude(),venues.get(0).getLongitude())))
+                    .setTag(venues.get(0).getId());
+        }
+        this.urlAPIDirections += "&key=AIzaSyAftKCowaKEkGSvRLV0ZrANIlDDKAOaQgc";
     }
     private void locationStart()
     {
@@ -132,8 +129,6 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             getContext().startActivity(settingsIntent);
         }
-
-        //It is verified if the gps is activated.
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             return;
@@ -162,6 +157,5 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
 
             }
         });
-        //mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 1000, locationListener);
     }
 }

@@ -85,14 +85,7 @@ public class VenueViewModel extends ViewModel {
     public LiveData<List<Venue>> getVenues() {
         if (venues == null) {
             venues = new MutableLiveData<List<Venue>>();
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-                Toast.makeText(getContext(), "Please proceed to make your request again", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
-                locationStart();
-            }
+            locationStart();
         }
         return venues;
     }
@@ -106,9 +99,9 @@ public class VenueViewModel extends ViewModel {
             getContext().startActivity(settingsIntent);
         }
 
-        //It is verified if the gps is activated.
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            Toast.makeText(getContext(), "Please proceed to make your request again", Toast.LENGTH_LONG).show();
             return;
         }
         // It is initialized the LocationListener Manager
@@ -167,6 +160,7 @@ public class VenueViewModel extends ViewModel {
                                 Category category = new Category();
                                 category.setId(categories.getString("id"));
                                 category.setName(categories.getString("name"));
+                                venue.setCategory(category);
                                 list.add(venue);
                             }
                             venues.setValue(list);
@@ -177,6 +171,7 @@ public class VenueViewModel extends ViewModel {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Se jodió la madre", Toast.LENGTH_SHORT).show();
                 error.printStackTrace();
                 requestQueue.stop();
             }

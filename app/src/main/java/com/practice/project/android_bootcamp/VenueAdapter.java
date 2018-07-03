@@ -47,6 +47,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueAdapter
             public void onClick(View view) {
                 Class destinationClass = DetailActivity.class;
                 Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+                intentToStartDetailActivity.putExtra("Venue", mVenueData.get(venueAdapterViewHolder.getAdapterPosition()));
                 context.startActivity(intentToStartDetailActivity);
             }
         });
