@@ -10,7 +10,6 @@ public class Venue implements Serializable {
     private String id;
     private String address;
     private String name;
-    private Image photo;
     private double longitude;
     private double latitude;
     private Category category;
@@ -18,12 +17,10 @@ public class Venue implements Serializable {
     public Venue() {
     }
 
-    public Venue(String id, String address, String name, Image photo, double longitude,
-                 double latitude, Category category) {
+    public Venue(String id, String address, String name, double longitude, double latitude, Category category) {
         this.id = id;
         this.address = address;
         this.name = name;
-        this.photo = photo;
         this.longitude = longitude;
         this.latitude = latitude;
         this.category = category;
@@ -51,14 +48,6 @@ public class Venue implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Image getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(Image photo) {
-        this.photo = photo;
     }
 
     public double getLongitude() {
