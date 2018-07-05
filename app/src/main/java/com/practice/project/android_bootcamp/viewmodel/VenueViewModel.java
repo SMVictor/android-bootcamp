@@ -6,9 +6,12 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,6 +28,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.practice.project.android_bootcamp.data.VenuesContract;
 import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.Venue;
 
@@ -38,18 +42,22 @@ import static com.android.volley.Request.*;
 
 public class VenueViewModel extends ViewModel {
 
+    //List of venues
     private MutableLiveData<List<Venue>> venues;
+    //Variables needed for Volley
     private Context context;
     private Activity activity;
-    // This variables are used to do the Foursquare API request.
+    //Variables used to get the current location
     private Double longitude;
     private Double latitude;
     private LocationManager mlocManager;
+    // This variables are used to do the Foursquare API request.
     private String url;
     private String CLIENT_ID = "DJS3YIF02PXN1VHITVGRS3Q43X0XOUZ1R1QDLPCLF4ZYWYBI";
     private String CLIENT_SECRET = "XQUKOG2D00ZIQZ0OB4XNB3TEYGTVDRGDHS343IHVATP5GBEA";
     private int RADIUS = 1000;
 
+    ///////////////////// Getters and Setters   ///////////////////////////////////////////////////
     public Activity getActivity() {
         return activity;
     }
@@ -81,6 +89,7 @@ public class VenueViewModel extends ViewModel {
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public LiveData<List<Venue>> getVenues() {
         if (venues == null) {
@@ -128,7 +137,6 @@ public class VenueViewModel extends ViewModel {
 
             }
         });
-        //mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 1000, locationListener);
     }
 
     private void loadVenues() {
@@ -138,9 +146,12 @@ public class VenueViewModel extends ViewModel {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        List<Venue> list = new ArrayList<Venue>();
-
                         try {
+                            List<Venue> list = new ArrayList<Venue>();
+                            VenuesContract.VenuesDbHelper mDbHelper = new VenuesContract.VenuesDbHelper(getContext());
+                            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                            db.delete(VenuesContract.VenuesEntry.TABLE_NAME, null, null);
+                            db.delete(VenuesContract.CategoryEntry.TABLE_NAME, null, null);
                             JSONArray listVenuesOnResponse = response.getJSONObject("response").getJSONArray("venues");
                             for (int i = 0; i < listVenuesOnResponse.length(); i++) {
 
@@ -162,6 +173,20 @@ public class VenueViewModel extends ViewModel {
                                 category.setName(categories.getString("name"));
                                 venue.setCategory(category);
                                 list.add(venue);
+                                //
+                                ContentValues categoriesValues = new ContentValues();
+                                categoriesValues.put(VenuesContract.CategoryEntry._ID, venue.getCategory().getId());
+                                categoriesValues.put(VenuesContract.CategoryEntry.NAME, venue.getCategory().getName());
+                                long categoriesInsert = db.insert(VenuesContract.CategoryEntry.TABLE_NAME, null, categoriesValues);
+                                //
+                                ContentValues venuesValues = new ContentValues();
+                                venuesValues.put(VenuesContract.VenuesEntry._ID, venue.getId());
+                                venuesValues.put(VenuesContract.VenuesEntry.NAME, venue.getName());
+                                venuesValues.put(VenuesContract.VenuesEntry.ADDRESS, venue.getAddress());
+                                venuesValues.put(VenuesContract.VenuesEntry.LATITUDE, venue.getLatitude());
+                                venuesValues.put(VenuesContract.VenuesEntry.LONGITUDE, venue.getLongitude());
+                                venuesValues.put(VenuesContract.VenuesEntry.CATEGORY_ID, venue.getCategory().getId());
+                                long venuesInsert = db.insert(VenuesContract.VenuesEntry.TABLE_NAME, null, venuesValues);
                             }
                             venues.setValue(list);
                         } catch (Exception e) {
@@ -171,7 +196,35 @@ public class VenueViewModel extends ViewModel {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Se jodió la madre", Toast.LENGTH_SHORT).show();
+                //
+                VenuesContract.VenuesDbHelper mDbHelper = new VenuesContract.VenuesDbHelper(getContext());
+                SQLiteDatabase db = mDbHelper.getReadableDatabase();
+                List<Venue> list = new ArrayList<Venue>();
+                //
+                String categoriesQuery = "SELECT * FROM " + VenuesContract.CategoryEntry.TABLE_NAME;
+                Cursor categoriesData = db.rawQuery(categoriesQuery, null);
+                //
+                String venuesQuery = "SELECT * FROM " + VenuesContract.VenuesEntry.TABLE_NAME;
+                Cursor venuesData = db.rawQuery(venuesQuery, null);
+                //
+                while (venuesData.moveToNext()){
+                   Venue venue = new Venue();
+                   venue.setId(venuesData.getString(0));
+                   venue.setName(venuesData.getString(1));
+                   venue.setAddress(venuesData.getString(2));
+                   venue.setLatitude(venuesData.getDouble(3));
+                   venue.setLongitude(venuesData.getDouble(4));
+                   Category category = new Category();
+                    while (categoriesData.moveToNext()){
+                        if (categoriesData.getString(0).equalsIgnoreCase(venuesData.getString(5))){
+                            category.setId(categoriesData.getString(0));
+                            category.setName(categoriesData.getString(1));
+                        }
+                    }
+                    venue.setCategory(category);
+                    list.add(venue);
+                }
+                venues.setValue(list);
                 error.printStackTrace();
                 requestQueue.stop();
             }
