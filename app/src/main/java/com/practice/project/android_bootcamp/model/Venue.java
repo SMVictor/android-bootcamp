@@ -1,36 +1,43 @@
 package com.practice.project.android_bootcamp.model;
 
-import android.media.Image;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.util.List;
 
+@Entity(foreignKeys = @ForeignKey(entity = Category.class,
+        parentColumns = "id",
+        childColumns = "category_id",
+        onDelete = ForeignKey.CASCADE))
 public class Venue implements Serializable {
 
-    private String id;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int id;
+    @ColumnInfo(name = "address")
     private String address;
+    @ColumnInfo(name = "name")
     private String name;
+    @ColumnInfo(name = "longitude")
     private double longitude;
+    @ColumnInfo(name = "latitude")
     private double latitude;
-    private Category category;
+    @ColumnInfo(name = "category_id")
+    private int categoryId;
+    @Ignore
+    Category category;
 
     public Venue() {
     }
 
-    public Venue(String id, String address, String name, double longitude, double latitude, Category category) {
-        this.id = id;
-        this.address = address;
-        this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.category = category;
-    }
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -64,6 +71,14 @@ public class Venue implements Serializable {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public Category getCategory() {

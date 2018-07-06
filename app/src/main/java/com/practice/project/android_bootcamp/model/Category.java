@@ -1,30 +1,31 @@
 package com.practice.project.android_bootcamp.model;
 
-import java.io.Serializable;
-import java.util.List;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+import java.io.Serializable;
+
+@Entity
 public class Category implements Serializable {
 
-    private String id;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int id;
+    @ColumnInfo(name = "name")
     private String name;
-    private List<Venue> venues;
 
     public Category() {
     }
 
-    public Category(String id, String name, List<Venue> venues) {
-        this.id = id;
-        this.name = name;
-        this.venues = venues;
-    }
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
+
 
     public String getName() {
         return name;
@@ -32,13 +33,5 @@ public class Category implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Venue> getVenues() {
-        return venues;
-    }
-
-    public void setVenues(List<Venue> venues) {
-        this.venues = venues;
     }
 }

@@ -13,11 +13,9 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,21 +26,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.practice.project.android_bootcamp.model.Venue;
-import com.practice.project.android_bootcamp.viewmodel.VenueViewModel;
+import com.practice.project.android_bootcamp.viewmodel.VenuesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentMap extends SupportMapFragment implements OnMapReadyCallback {
 
-    private View view;
     private GoogleMap mMap;
-    private String urlAPIDirections;
     private List<Venue> venues;
-    private VenueViewModel model;
-    private Double latitude;
-    private Double longitude;
-    private LocationManager mlocManager;
+    private VenuesViewModel mVenuesViewModel;
+    private Double mCurrentLatitude;
+    private Double mCurrentLongitude;
+    private LocationManager mLocManager;
 
     public FragmentMap(){
 
@@ -52,7 +48,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         venues = new ArrayList<Venue>();
         getMapAsync(this);
         return view;
@@ -65,7 +61,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(Marker marker) {
                 for (int i=0; i<venues.size(); i++){
-                    if (venues.get(i).getId().equalsIgnoreCase((String) marker.getTag())){
+                    if (venues.get(i).getId() ==  (int) marker.getTag()){
                         Class destinationClass = DetailActivity.class;
                         Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
                         intentToStartDetailActivity.putExtra("Venue", venues.get(i));
@@ -78,17 +74,17 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
 
         locationStart();
 
-        model = ViewModelProviders.of(getActivity()).get(VenueViewModel.class);
-        model.setContext(getContext());
-        model.setActivity(getActivity());
-        model.getVenues().observe(this, venues -> {
+        mVenuesViewModel = ViewModelProviders.of(getActivity()).get(VenuesViewModel.class);
+        mVenuesViewModel.setContext(getContext());
+        mVenuesViewModel.setActivity(getActivity());
+        mVenuesViewModel.getVenues().observe(this, venues -> {
             this.venues = venues;
             setPointsInMap();
         });
     }
     public void setInitialLocationMap()
     {
-        LatLng initialPosition = new LatLng(latitude, longitude);
+        LatLng initialPosition = new LatLng(mCurrentLatitude, mCurrentLongitude);
         mMap.addMarker(new MarkerOptions()
                 .position(initialPosition)
                 .title("Current Location")
@@ -99,7 +95,6 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     {
         if(venues.size() > 1)
         {
-            this.urlAPIDirections += "&waypoints=";
 
             for(int i = 0; i < venues.size(); i++)
             {
@@ -107,8 +102,8 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
                         .title(venues.get(i).getName())
                         .position(new LatLng(venues.get(i).getLatitude(),venues.get(i).getLongitude())))
                         .setTag(venues.get(i).getId());
-                this.urlAPIDirections += venues.get(i).getLatitude() + "," + venues.get(i).getLongitude();
-                if(i != (venues.size()-1)){this.urlAPIDirections += "|";}
+                if(i != (venues.size()-1)){
+                }
             }
         }
         else
@@ -118,13 +113,12 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
                     .position(new LatLng(venues.get(0).getLatitude(),venues.get(0).getLongitude())))
                     .setTag(venues.get(0).getId());
         }
-        this.urlAPIDirections += "&key=AIzaSyAftKCowaKEkGSvRLV0ZrANIlDDKAOaQgc";
     }
     private void locationStart()
     {
         //It is verified if the user grants the permissions necessary to use her/his current position.
-        mlocManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        mLocManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        final boolean gpsEnabled = mLocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!gpsEnabled) {
             Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             getContext().startActivity(settingsIntent);
@@ -134,11 +128,11 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             return;
         }
         // It is initialized the LocationListener Manager
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1000, new LocationListener() {
+        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1000, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
+                mCurrentLatitude = location.getLatitude();
+                mCurrentLongitude = location.getLongitude();
                 setInitialLocationMap();
             }
 
