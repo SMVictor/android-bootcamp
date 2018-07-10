@@ -3,6 +3,7 @@ package com.practice.project.android_bootcamp.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -12,12 +13,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(foreignKeys =
+        {@ForeignKey(entity = Category.class,  parentColumns = "category_id", childColumns = "category_id",
+        onDelete = ForeignKey.CASCADE),
+        @ForeignKey(entity = Location.class, parentColumns = "location_id", childColumns = "location_id",
+        onDelete = ForeignKey.CASCADE)})
 public class Venue implements Serializable
 {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "venue_id")
-    private int venue_id;
+    private int venueId;
     @Expose
     private String id;
     @Expose
@@ -28,8 +33,20 @@ public class Venue implements Serializable
     @Ignore
     @Expose
     private List<Category> categories = new ArrayList<Category>();
+    @ColumnInfo(name = "category_id")
+    private int categoryId;
+    @ColumnInfo(name = "location_id")
+    private int locationId;
 
     public Venue() {}
+
+    public int getVenueId() {
+        return venueId;
+    }
+
+    public void setVenueId(int venueId) {
+        this.venueId = venueId;
+    }
 
     public String getId() {
         return id;
@@ -63,11 +80,19 @@ public class Venue implements Serializable
         this.categories = categories;
     }
 
-    public int getVenue_id() {
-        return venue_id;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setVenue_id(int venue_id) {
-        this.venue_id = venue_id;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 }

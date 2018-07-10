@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.practice.project.android_bootcamp.model.Venue;
 import com.practice.project.android_bootcamp.viewmodel.VenuesViewModel;
 
 public class FragmentList extends Fragment {

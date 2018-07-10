@@ -16,7 +16,7 @@ public interface CategoryDao {
     @Query("SELECT * FROM category")
     List<Category> getAll();
 
-    @Query("SELECT * FROM category WHERE id LIKE :id LIMIT 1")
+    @Query("SELECT * FROM category WHERE category_id LIKE :id LIMIT 1")
     Category findById(String id);
 
     @Insert

@@ -16,6 +16,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.practice.project.android_bootcamp.MainActivity;
+import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.Venue;
 import com.practice.project.android_bootcamp.utilities.FourSquareAPIController;
 import com.practice.project.android_bootcamp.utilities.NetworkUtilities;
@@ -30,7 +32,7 @@ public class VenuesViewModel extends ViewModel {
     private Double mCurrentLongitude;
     private Double mCurrentLatitude;
     private LocationManager mLocManager;
-    private NetworkUtilities networkUtilities = new NetworkUtilities();
+    private NetworkUtilities mNetworkUtilities = new NetworkUtilities();
 
     ////////////////////////////////// Getters and Setters//////////////////////////////////////////
     public Activity getActivity() {
@@ -69,7 +71,7 @@ public class VenuesViewModel extends ViewModel {
     public LiveData<List<Venue>> getVenues() {
         if (mVenues == null) {
             mVenues = new MutableLiveData<List<Venue>>();
-            if(networkUtilities.isConnectedToNetwork(getContext())){
+            if(mNetworkUtilities.isConnectedToNetwork(getContext())){
                 locationStart();
             }
             else {
@@ -131,14 +133,22 @@ public class VenuesViewModel extends ViewModel {
     }
 
     private void loadVenuesFromDatabase() {
-       /* try {
+        try {
             List<Venue> venuesList = MainActivity.mVenuesAppDatabase.venueDao().getAll();
             List<Category> categoriesList = MainActivity.mVenuesAppDatabase.categoryDao().getAll();
+            List<com.practice.project.android_bootcamp.model.Location> locationList = MainActivity.mVenuesAppDatabase.locationDao().getAll();
             if (venuesList.size() != 0){
-                for (int i=0; i<venuesList.size(); i++) {
-                    for (int j=0; j<categoriesList.size(); j++) {
-                        if (venuesList.get(i).getCategoryId() == categoriesList.get(j).getId()){
-                            venuesList.get(i).setCategory(categoriesList.get(j));
+                for (Venue venue:venuesList) {
+                    for (Category category : categoriesList) {
+                        if (venue.getCategoryId() == category.getCategoryId()){
+                            venue.getCategories().add(category);
+                            break;
+                        }
+                    }
+                    for (com.practice.project.android_bootcamp.model.Location location : locationList) {
+                        if (venue.getLocationId() == location.getLocationId()){
+                            venue.setLocation(location);
+                            break;
                         }
                     }
                 }
@@ -147,6 +157,6 @@ public class VenuesViewModel extends ViewModel {
             }
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
     }
 }

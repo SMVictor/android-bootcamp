@@ -25,7 +25,7 @@ public class DetailActivity extends AppCompatActivity {
         Venue venue = (Venue) getIntent().getSerializableExtra("Venue");
 
         mTitleVenueDetail.setText(venue.getName());
-        mAddressVenueDetail.setText(venue.getLocation().getFormattedAddress().toString());
+        mAddressVenueDetail.setText(venue.getLocation().getFormattedAddressString());
         String categoriesNames = "";
         for (Category category:venue.getCategories()) {
 

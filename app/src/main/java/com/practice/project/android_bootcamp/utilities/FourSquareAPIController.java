@@ -4,6 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.practice.project.android_bootcamp.MainActivity;
+import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.JsonResponse;
 import com.practice.project.android_bootcamp.model.Venue;
 
@@ -43,7 +45,32 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
     }
     @Override
     public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
-        mVenues.setValue(response.body().getResponse().getVenues());
+        try {
+            MainActivity.mVenuesAppDatabase.clearAllTables();
+        }catch (Exception e){}
+        List<Venue> venues = response.body().getResponse().getVenues();
+        for (Venue venue: venues) {
+            try {
+                if (venue.getCategories().size()==0){
+                    Category category = new Category();
+                    category.setId("Undefined");
+                    category.setName("Undefined");
+                    venue.getCategories().add(category);
+                }
+                int categoryId = (int) MainActivity.mVenuesAppDatabase.categoryDao()
+                        .insert(venue.getCategories().get(0));
+                venue.getLocation().setFormattedAddressString(venue.getLocation().getFormattedAddress().toString());
+                int locationId = (int) MainActivity.mVenuesAppDatabase.locationDao()
+                        .insert(venue.getLocation());
+
+                venue.setCategoryId(categoryId);
+                venue.setLocationId(locationId);
+
+                int venueId = (int) MainActivity.mVenuesAppDatabase.venueDao().insert(venue);
+                venue.setVenueId(venueId);
+            }catch (Exception e){}
+        }
+        mVenues.setValue(venues);
     }
 
     @Override

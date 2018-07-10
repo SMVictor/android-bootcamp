@@ -61,7 +61,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(Marker marker) {
                 for (int i=0; i<venues.size(); i++){
-                    if (venues.get(i).getVenue_id() ==  (int) marker.getTag()){
+                    if (venues.get(i).getVenueId() ==  (int) marker.getTag()){
                         Class destinationClass = DetailActivity.class;
                         Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
                         intentToStartDetailActivity.putExtra("Venue", venues.get(i));
@@ -101,7 +101,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
                 this.mMap.addMarker(new MarkerOptions()
                         .title(venues.get(i).getName())
                         .position(new LatLng(venues.get(i).getLocation().getLat(),venues.get(i).getLocation().getLng())))
-                        .setTag(venues.get(i).getVenue_id());
+                        .setTag(venues.get(i).getVenueId());
                 if(i != (venues.size()-1)){
                 }
             }
@@ -111,7 +111,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             this.mMap.addMarker(new MarkerOptions()
                     .title(venues.get(0).getName())
                     .position(new LatLng(venues.get(0).getLocation().getLat(),venues.get(0).getLocation().getLng())))
-                    .setTag(venues.get(0).getVenue_id());
+                    .setTag(venues.get(0).getVenueId());
         }
     }
     private void locationStart()
