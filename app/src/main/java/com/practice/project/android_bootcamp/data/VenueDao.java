@@ -19,9 +19,6 @@ public interface VenueDao {
     @Query("SELECT * FROM venue WHERE id LIKE :id LIMIT 1")
     Venue findById(String id);
 
-    @Query("SELECT * FROM venue WHERE category_id=:categoryId")
-    List<Venue> findVenuesForCategory(int categoryId);
-
     @Insert
     void insertAll(List<Venue> venues);
 

@@ -1,52 +1,42 @@
+
 package com.practice.project.android_bootcamp.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity(foreignKeys = @ForeignKey(entity = Category.class,
-        parentColumns = "id",
-        childColumns = "category_id",
-        onDelete = ForeignKey.CASCADE))
-public class Venue implements Serializable {
-
+@Entity
+public class Venue implements Serializable
+{
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    private int id;
-    @ColumnInfo(name = "address")
-    private String address;
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "venue_id")
+    private int venue_id;
+    @Expose
+    private String id;
+    @Expose
     private String name;
-    @ColumnInfo(name = "longitude")
-    private double longitude;
-    @ColumnInfo(name = "latitude")
-    private double latitude;
-    @ColumnInfo(name = "category_id")
-    private int categoryId;
     @Ignore
-    Category category;
+    @Expose
+    private Location location = new Location();
+    @Ignore
+    @Expose
+    private List<Category> categories = new ArrayList<Category>();
 
-    public Venue() {
-    }
+    public Venue() {}
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getName() {
@@ -57,35 +47,27 @@ public class Venue implements Serializable {
         this.name = name;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getVenue_id() {
+        return venue_id;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setVenue_id(int venue_id) {
+        this.venue_id = venue_id;
     }
 }

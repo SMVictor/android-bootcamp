@@ -16,9 +16,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
-import com.practice.project.android_bootcamp.MainActivity;
-import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.Venue;
+import com.practice.project.android_bootcamp.utilities.FourSquareAPIController;
 import com.practice.project.android_bootcamp.utilities.NetworkUtilities;
 
 import java.util.List;
@@ -124,11 +123,15 @@ public class VenuesViewModel extends ViewModel {
     }
 
     private void loadVenuesFromFourSquareAPI() {
-        networkUtilities.getVenuesInLocation(mVenues,mCurrentLatitude, mCurrentLongitude, mContext);
+        String geoLocation = mCurrentLatitude+","+mCurrentLongitude;
+        FourSquareAPIController fourSquareAPIController = new FourSquareAPIController();
+        fourSquareAPIController.setmGeoLocation(geoLocation);
+        fourSquareAPIController.setmVenues(mVenues);
+        fourSquareAPIController.start();
     }
 
     private void loadVenuesFromDatabase() {
-        try {
+       /* try {
             List<Venue> venuesList = MainActivity.mVenuesAppDatabase.venueDao().getAll();
             List<Category> categoriesList = MainActivity.mVenuesAppDatabase.categoryDao().getAll();
             if (venuesList.size() != 0){
@@ -144,7 +147,6 @@ public class VenuesViewModel extends ViewModel {
             }
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
     }
-
 }

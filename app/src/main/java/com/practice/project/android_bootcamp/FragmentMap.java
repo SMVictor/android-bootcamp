@@ -61,7 +61,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(Marker marker) {
                 for (int i=0; i<venues.size(); i++){
-                    if (venues.get(i).getId() ==  (int) marker.getTag()){
+                    if (venues.get(i).getVenue_id() ==  (int) marker.getTag()){
                         Class destinationClass = DetailActivity.class;
                         Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
                         intentToStartDetailActivity.putExtra("Venue", venues.get(i));
@@ -88,7 +88,7 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions()
                 .position(initialPosition)
                 .title("Current Location")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))).setTag("Current Location");
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))).setTag(-1);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition,16));
     }
     public void setPointsInMap()
@@ -100,8 +100,8 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
             {
                 this.mMap.addMarker(new MarkerOptions()
                         .title(venues.get(i).getName())
-                        .position(new LatLng(venues.get(i).getLatitude(),venues.get(i).getLongitude())))
-                        .setTag(venues.get(i).getId());
+                        .position(new LatLng(venues.get(i).getLocation().getLat(),venues.get(i).getLocation().getLng())))
+                        .setTag(venues.get(i).getVenue_id());
                 if(i != (venues.size()-1)){
                 }
             }
@@ -110,8 +110,8 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
         {
             this.mMap.addMarker(new MarkerOptions()
                     .title(venues.get(0).getName())
-                    .position(new LatLng(venues.get(0).getLatitude(),venues.get(0).getLongitude())))
-                    .setTag(venues.get(0).getId());
+                    .position(new LatLng(venues.get(0).getLocation().getLat(),venues.get(0).getLocation().getLng())))
+                    .setTag(venues.get(0).getVenue_id());
         }
     }
     private void locationStart()

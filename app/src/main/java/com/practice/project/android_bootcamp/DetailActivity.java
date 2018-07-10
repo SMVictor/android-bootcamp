@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.Venue;
 
 public class DetailActivity extends AppCompatActivity {
@@ -24,7 +25,12 @@ public class DetailActivity extends AppCompatActivity {
         Venue venue = (Venue) getIntent().getSerializableExtra("Venue");
 
         mTitleVenueDetail.setText(venue.getName());
-        mAddressVenueDetail.setText(venue.getAddress());
-        mCategoryVenueDetail.setText(venue.getCategory().getName());
+        mAddressVenueDetail.setText(venue.getLocation().getFormattedAddress().toString());
+        String categoriesNames = "";
+        for (Category category:venue.getCategories()) {
+
+            categoriesNames+=category.getName()+" ";
+        }
+        mCategoryVenueDetail.setText(categoriesNames);
     }
 }
