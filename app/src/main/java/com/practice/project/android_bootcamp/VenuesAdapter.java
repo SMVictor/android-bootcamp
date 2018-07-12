@@ -1,13 +1,12 @@
 package com.practice.project.android_bootcamp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.practice.project.android_bootcamp.databinding.VenueBinding;
 import com.practice.project.android_bootcamp.model.Venue;
 
 import java.util.List;
@@ -15,6 +14,7 @@ import java.util.List;
 public class VenuesAdapter extends RecyclerView.Adapter<VenuesAdapter.VenueAdapterViewHolder> {
 
     private List<Venue> mVenuesData;
+    private LayoutInflater layoutInflater;
 
     public VenuesAdapter() {
     }
@@ -24,39 +24,45 @@ public class VenuesAdapter extends RecyclerView.Adapter<VenuesAdapter.VenueAdapt
      */
     public class VenueAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        public final TextView mVenueTextView;
+        private VenueBinding venueBinding;
+        public VenueAdapterViewHolder(VenueBinding venueBinding) {
+            super(venueBinding.getRoot());
+            this.venueBinding = venueBinding;
+        }
+        public void bind(Venue venue){
+            this.venueBinding.setVenueModel(venue);
+        }
 
-        public VenueAdapterViewHolder(View view) {
-            super(view);
-            mVenueTextView = (TextView) view.findViewById(R.id.tv_venue_data);
+        public VenueBinding getVenueBinding() {
+            return venueBinding;
         }
     }
     @Override
     public VenueAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.venue_list_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
+        if (layoutInflater == null){
+            layoutInflater = LayoutInflater.from(viewGroup.getContext());
+        }
+        VenueBinding venueBinding = VenueBinding.inflate(layoutInflater, viewGroup, false);
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        VenueAdapterViewHolder venueAdapterViewHolder = new VenueAdapterViewHolder(view);
+        VenueAdapterViewHolder venueAdapterViewHolder = new VenueAdapterViewHolder(venueBinding);
 
         venueAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Class destinationClass = DetailActivity.class;
-                Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+                Intent intentToStartDetailActivity = new Intent(viewGroup.getContext(), destinationClass);
                 intentToStartDetailActivity.putExtra("Venue", mVenuesData.get(venueAdapterViewHolder.getAdapterPosition()));
-                context.startActivity(intentToStartDetailActivity);
+                viewGroup.getContext().startActivity(intentToStartDetailActivity);
             }
         });
+
         return venueAdapterViewHolder;
 }
 
     @Override
     public void onBindViewHolder(VenueAdapterViewHolder venueAdapterViewHolder, int position) {
-        String venueForThisPosition = mVenuesData.get(position).getName();
-        venueAdapterViewHolder.mVenueTextView.setText(venueForThisPosition);
+        Venue venue = mVenuesData.get(position);
+        venueAdapterViewHolder.bind(venue);
     }
 
     @Override

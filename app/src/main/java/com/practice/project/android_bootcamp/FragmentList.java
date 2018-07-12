@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.practice.project.android_bootcamp.model.Venue;
 import com.practice.project.android_bootcamp.viewmodel.VenuesViewModel;
 
 public class FragmentList extends Fragment {
@@ -22,6 +21,18 @@ public class FragmentList extends Fragment {
 
     public FragmentList(){
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mVenuesViewModel = ViewModelProviders.of(getActivity()).get(VenuesViewModel.class);
+        mVenuesViewModel.setActivity(getActivity());
+        mVenuesViewModel.setContext(getContext());
+        mVenuesViewModel.getVenues().observe(this, venues -> {
+            mVenuesAdapter.setVenueData(venues);
+
+        });
     }
 
     @Nullable
@@ -41,16 +52,5 @@ public class FragmentList extends Fragment {
         mVenuesRecyclerView.setAdapter(mVenuesAdapter);
 
         return view;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mVenuesViewModel = ViewModelProviders.of(getActivity()).get(VenuesViewModel.class);
-        mVenuesViewModel.setActivity(getActivity());
-        mVenuesViewModel.setContext(getContext());
-        mVenuesViewModel.getVenues().observe(this, venues -> {
-            mVenuesAdapter.setVenueData(venues);
-        });
     }
 }
