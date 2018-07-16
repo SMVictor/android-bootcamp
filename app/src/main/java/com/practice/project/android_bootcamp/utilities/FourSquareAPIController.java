@@ -86,11 +86,11 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
         this.mGeoLocation = mGeoLocation;
     }
 
-    public MutableLiveData<List<Venue>> getmVenues() {
+    public MutableLiveData<List<Venue>> getVenues() {
         return mVenues;
     }
 
-    public void setmVenues(MutableLiveData<List<Venue>> mVenues) {
-        this.mVenues = mVenues;
+    public void setVenues(MutableLiveData<List<Venue>> venues) {
+        this.mVenues = venues;
     }
 }

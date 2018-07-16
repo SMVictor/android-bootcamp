@@ -57,7 +57,7 @@ public class VenuesAdapter extends RecyclerView.Adapter<VenuesAdapter.VenueAdapt
         });
 
         return venueAdapterViewHolder;
-}
+    }
 
     @Override
     public void onBindViewHolder(VenueAdapterViewHolder venueAdapterViewHolder, int position) {

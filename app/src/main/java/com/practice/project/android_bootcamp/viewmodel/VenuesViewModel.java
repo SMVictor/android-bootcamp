@@ -128,7 +128,7 @@ public class VenuesViewModel extends ViewModel {
         String geoLocation = mCurrentLatitude+","+mCurrentLongitude;
         FourSquareAPIController fourSquareAPIController = new FourSquareAPIController();
         fourSquareAPIController.setmGeoLocation(geoLocation);
-        fourSquareAPIController.setmVenues(mVenues);
+        fourSquareAPIController.setVenues(mVenues);
         fourSquareAPIController.start();
     }
 
