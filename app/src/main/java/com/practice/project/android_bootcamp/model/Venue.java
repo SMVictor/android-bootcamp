@@ -1,29 +1,51 @@
+
 package com.practice.project.android_bootcamp.model;
 
-import android.media.Image;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Venue implements Serializable {
-
+@Entity(foreignKeys =
+        {@ForeignKey(entity = Category.class,  parentColumns = "category_id", childColumns = "category_id",
+        onDelete = ForeignKey.CASCADE),
+        @ForeignKey(entity = Location.class, parentColumns = "location_id", childColumns = "location_id",
+        onDelete = ForeignKey.CASCADE)})
+public class Venue implements Serializable
+{
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "venue_id")
+    private int venueId;
+    @Expose
     private String id;
-    private String address;
+    @Expose
     private String name;
-    private double longitude;
-    private double latitude;
-    private Category category;
+    @Ignore
+    @Expose
+    private Location location = new Location();
+    @Ignore
+    @Expose
+    private List<Category> categories = new ArrayList<Category>();
+    @ColumnInfo(name = "category_id")
+    private int categoryId;
+    @ColumnInfo(name = "location_id")
+    private int locationId;
 
-    public Venue() {
+    public Venue() {}
+
+    public int getVenueId() {
+        return venueId;
     }
 
-    public Venue(String id, String address, String name, double longitude, double latitude, Category category) {
-        this.id = id;
-        this.address = address;
-        this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.category = category;
+    public void setVenueId(int venueId) {
+        this.venueId = venueId;
     }
 
     public String getId() {
@@ -34,14 +56,6 @@ public class Venue implements Serializable {
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getName() {
         return name;
     }
@@ -50,27 +64,35 @@ public class Venue implements Serializable {
         this.name = name;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
-    public Category getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 }

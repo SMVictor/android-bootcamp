@@ -1,22 +1,26 @@
+
 package com.practice.project.android_bootcamp.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
-import java.util.List;
 
-public class Category implements Serializable {
-
+@Entity
+public class Category implements Serializable
+{
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "category_id")
+    private int categoryId;
+    @Expose
     private String id;
+    @Expose
     private String name;
-    private List<Venue> venues;
 
-    public Category() {
-    }
-
-    public Category(String id, String name, List<Venue> venues) {
-        this.id = id;
-        this.name = name;
-        this.venues = venues;
-    }
+    public Category() {}
 
     public String getId() {
         return id;
@@ -34,11 +38,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public List<Venue> getVenues() {
-        return venues;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setVenues(List<Venue> venues) {
-        this.venues = venues;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }
