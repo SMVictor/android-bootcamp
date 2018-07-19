@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.practice.project.android_bootcamp.VenuesAdapter;
+import com.practice.project.android_bootcamp.adapter.VenuesAdapter;
 import com.practice.project.android_bootcamp.model.Venue;
 
 import java.util.ArrayList;
