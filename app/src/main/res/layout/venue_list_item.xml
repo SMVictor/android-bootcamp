@@ -13,7 +13,7 @@
             android:id="@+id/tv_venue_data"
             android:textSize="22sp"
             android:padding="16dp"
-            android:text="@{venueModel.getName()}"
+            android:text="@{venueModel.name}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

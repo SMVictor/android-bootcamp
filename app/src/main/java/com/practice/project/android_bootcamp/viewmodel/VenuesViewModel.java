@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +23,7 @@ import com.practice.project.android_bootcamp.model.Venue;
 import com.practice.project.android_bootcamp.utilities.FourSquareAPIController;
 import com.practice.project.android_bootcamp.utilities.NetworkUtilities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VenuesViewModel extends ViewModel {
@@ -75,7 +77,7 @@ public class VenuesViewModel extends ViewModel {
                 locationStart();
             }
             else {
-                loadVenuesFromDatabase();
+                new LoadVenuesFromDatabaseTask().execute();
             }
         }
         return mVenues;
@@ -127,36 +129,45 @@ public class VenuesViewModel extends ViewModel {
     private void loadVenuesFromFourSquareAPI() {
         String geoLocation = mCurrentLatitude+","+mCurrentLongitude;
         FourSquareAPIController fourSquareAPIController = new FourSquareAPIController();
-        fourSquareAPIController.setmGeoLocation(geoLocation);
+        fourSquareAPIController.setGeoLocation(geoLocation);
         fourSquareAPIController.setVenues(mVenues);
         fourSquareAPIController.start();
     }
 
-    private void loadVenuesFromDatabase() {
-        try {
-            List<Venue> venuesList = MainActivity.mVenuesAppDatabase.venueDao().getAll();
-            List<Category> categoriesList = MainActivity.mVenuesAppDatabase.categoryDao().getAll();
-            List<com.practice.project.android_bootcamp.model.Location> locationList = MainActivity.mVenuesAppDatabase.locationDao().getAll();
-            if (venuesList.size() != 0){
-                for (Venue venue:venuesList) {
-                    for (Category category : categoriesList) {
-                        if (venue.getCategoryId() == category.getCategoryId()){
-                            venue.getCategories().add(category);
-                            break;
+    public class LoadVenuesFromDatabaseTask extends AsyncTask<Void, Void, List<Venue>>{
+        @Override
+        protected List<Venue> doInBackground(Void... voids) {
+            List<Venue> venues = new ArrayList<>();
+            try {
+                venues = MainActivity.mVenuesAppDatabase.venueDao().getAll();
+                List<Category> categoriesList = MainActivity.mVenuesAppDatabase.categoryDao().getAll();
+                List<com.practice.project.android_bootcamp.model.Location> locationList = MainActivity.mVenuesAppDatabase.locationDao().getAll();
+                if (venues.size() != 0){
+                    for (Venue venue:venues) {
+                        for (Category category : categoriesList) {
+                            if (venue.getCategoryId() == category.getCategoryId()){
+                                venue.getCategories().add(category);
+                                break;
+                            }
                         }
-                    }
-                    for (com.practice.project.android_bootcamp.model.Location location : locationList) {
-                        if (venue.getLocationId() == location.getLocationId()){
-                            venue.setLocation(location);
-                            break;
+                        for (com.practice.project.android_bootcamp.model.Location location : locationList) {
+                            if (venue.getLocationId() == location.getLocationId()){
+                                venue.setLocation(location);
+                                break;
+                            }
                         }
                     }
                 }
-                //The list of venues of the view model is loaded
-                mVenues.setValue(venuesList);
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
+            return venues;
+        }
+
+        @Override
+        protected void onPostExecute(List<Venue> venues) {
+            super.onPostExecute(venues);
+            mVenues.setValue(venues);
         }
     }
 }

@@ -9,6 +9,10 @@ public class JsonResponse implements Serializable {
     @Expose
     private Response response;
 
+    public JsonResponse(){
+        response = new Response();
+    }
+
     public Response getResponse() {
         return response;
     }
