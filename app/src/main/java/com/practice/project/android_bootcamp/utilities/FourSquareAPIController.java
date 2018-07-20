@@ -9,6 +9,7 @@ import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.JsonResponse;
 import com.practice.project.android_bootcamp.model.Venue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -78,12 +79,12 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
         t.printStackTrace();
     }
 
-    public String getmGeoLocation() {
+    public String getGeoLocation() {
         return mGeoLocation;
     }
 
-    public void setmGeoLocation(String mGeoLocation) {
-        this.mGeoLocation = mGeoLocation;
+    public void setGeoLocation(String geoLocation) {
+        this.mGeoLocation = geoLocation;
     }
 
     public MutableLiveData<List<Venue>> getVenues() {

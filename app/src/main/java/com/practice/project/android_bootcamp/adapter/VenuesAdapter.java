@@ -1,4 +1,4 @@
-package com.practice.project.android_bootcamp;
+package com.practice.project.android_bootcamp.adapter;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.practice.project.android_bootcamp.DetailActivity;
 import com.practice.project.android_bootcamp.databinding.VenueBinding;
 import com.practice.project.android_bootcamp.model.Venue;
 
