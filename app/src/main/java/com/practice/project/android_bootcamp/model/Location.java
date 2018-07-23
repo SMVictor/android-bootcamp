@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,9 +23,10 @@ public class Location implements Serializable
     private String formattedAddressString;
     @Ignore
     @Expose
-    private List<String> formattedAddress;
+    private List<String> formattedAddress = new ArrayList<>();;
 
-    public Location() {}
+    public Location() {
+    }
 
     public int getLocationId() {
         return locationId;
@@ -52,10 +54,6 @@ public class Location implements Serializable
 
     public List<String> getFormattedAddress() {
         return formattedAddress;
-    }
-
-    public void setFormattedAddress(List<String> formattedAddress) {
-        this.formattedAddress = formattedAddress;
     }
 
     public String getFormattedAddressString() {

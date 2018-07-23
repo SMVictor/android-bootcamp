@@ -29,23 +29,21 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private ViewPagerAdapter mAdapter;
     private LocationManager mLocManager;
-    public static MutableLiveData<List<Double>> mGeoLocation;
-    public static VenueDatabase mVenuesAppDatabase;
+    public static VenueDatabase sVenuesAppDatabase;
+    public static MutableLiveData<List<Double>> sGeoLocation = new MutableLiveData<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mGeoLocation = new MutableLiveData<>();
         locationStart();
 
         mTabLayout = findViewById(R.id.principal_tab);
         mViewPager = findViewById(R.id.principal_view_pager);
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        mVenuesAppDatabase = Room.databaseBuilder(getApplicationContext(), VenueDatabase.class, "venuesdb").allowMainThreadQueries().build();
+        sVenuesAppDatabase = Room.databaseBuilder(getApplicationContext(), VenueDatabase.class, "venuesdb").allowMainThreadQueries().build();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setElevation(0);
@@ -88,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 List<Double> geoLocation = new ArrayList<>();
                 geoLocation.add(location.getLatitude());
                 geoLocation.add(location.getLongitude());
-                mGeoLocation.setValue(geoLocation);
+                sGeoLocation.setValue(geoLocation);
             }
 
             @Override

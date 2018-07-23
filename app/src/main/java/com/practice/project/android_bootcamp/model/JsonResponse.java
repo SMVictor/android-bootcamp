@@ -7,17 +7,12 @@ import java.io.Serializable;
 public class JsonResponse implements Serializable {
 
     @Expose
-    private Response response;
+    private Response response = new Response();;
 
     public JsonResponse(){
-        response = new Response();
     }
 
     public Response getResponse() {
         return response;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
     }
 }
