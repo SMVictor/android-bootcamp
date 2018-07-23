@@ -1,6 +1,5 @@
 package com.practice.project.android_bootcamp;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,10 +10,8 @@ import android.view.ViewGroup;
 
 import com.practice.project.android_bootcamp.databinding.ListFragmentBinding;
 import com.practice.project.android_bootcamp.viewmodel.RecyclerViewViewModel;
-import com.practice.project.android_bootcamp.viewmodel.VenuesViewModel;
 
 public class FragmentList extends Fragment {
-    private VenuesViewModel mVenuesViewModel;
     private RecyclerViewViewModel recyclerViewViewModel;
 
     public FragmentList(){
@@ -24,13 +21,6 @@ public class FragmentList extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mVenuesViewModel = ViewModelProviders.of(getActivity()).get(VenuesViewModel.class);
-        mVenuesViewModel.setActivity(getActivity());
-        mVenuesViewModel.setContext(getContext());
-        mVenuesViewModel.getVenues().observe(this, venues -> {
-            recyclerViewViewModel.setVenues(venues);
-
-        });
     }
 
     @Nullable
@@ -39,7 +29,7 @@ public class FragmentList extends Fragment {
 
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         ListFragmentBinding binding = ListFragmentBinding.bind(view);
-        recyclerViewViewModel = new RecyclerViewViewModel(getActivity());
+        recyclerViewViewModel = new RecyclerViewViewModel(getActivity(), getContext());
         binding.setViewModel(recyclerViewViewModel);
         return view;
     }
