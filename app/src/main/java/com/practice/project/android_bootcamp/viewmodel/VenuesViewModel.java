@@ -18,9 +18,9 @@ import java.util.List;
 
 public class VenuesViewModel extends ViewModel {
 
-    private MutableLiveData<List<Venue>> mVenues;
-    private Context mContext;
+    private MutableLiveData<List<Venue>> mVenues = new MutableLiveData<>();
     private NetworkUtilities mNetworkUtilities = new NetworkUtilities();
+    private Context mContext;
 
 
     public void setActivity(Activity activity) {
@@ -38,9 +38,8 @@ public class VenuesViewModel extends ViewModel {
 
     public LiveData<List<Venue>> getVenues() {
         if (mVenues == null) {
-            mVenues = new MutableLiveData<>();
             if(mNetworkUtilities.isConnectedToNetwork(getContext())){
-                MainActivity.mGeoLocation.observeForever(geoLocation -> loadVenuesFromFourSquareAPI(geoLocation.get(0)+","+geoLocation.get(1)));
+                MainActivity.sGeoLocation.observeForever(geoLocation -> loadVenuesFromFourSquareAPI(geoLocation.get(0)+","+geoLocation.get(1)));
             }
             else {
                 new LoadVenuesFromDatabaseTask().execute();
@@ -61,9 +60,10 @@ public class VenuesViewModel extends ViewModel {
         protected List<Venue> doInBackground(Void... voids) {
             List<Venue> venues = new ArrayList<>();
             try {
-                venues = MainActivity.mVenuesAppDatabase.venueDao().getAll();
-                List<Category> categoriesList = MainActivity.mVenuesAppDatabase.categoryDao().getAll();
-                List<com.practice.project.android_bootcamp.model.Location> locationList = MainActivity.mVenuesAppDatabase.locationDao().getAll();
+                venues = MainActivity.sVenuesAppDatabase.venueDao().getAll();
+                List<Category> categoriesList = MainActivity.sVenuesAppDatabase.categoryDao().getAll();
+                List<com.practice.project.android_bootcamp.model.Location> locationList =
+                        MainActivity.sVenuesAppDatabase.locationDao().getAll();
                 if (venues.size() != 0){
                     for (Venue venue:venues) {
                         for (Category category : categoriesList) {

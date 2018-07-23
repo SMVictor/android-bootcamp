@@ -17,8 +17,4 @@ public class Response implements Serializable
         return venues;
     }
 
-    public void setVenues(List<Venue> venues) {
-        this.venues = venues;
-    }
-
 }

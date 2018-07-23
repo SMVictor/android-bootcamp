@@ -33,10 +33,6 @@ public class VenuesAdapter extends RecyclerView.Adapter<VenuesAdapter.VenueAdapt
         public void bind(Venue venue){
             this.venueBinding.setVenueModel(venue);
         }
-
-        public VenueBinding getVenueBinding() {
-            return venueBinding;
-        }
     }
     @Override
     public VenueAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {

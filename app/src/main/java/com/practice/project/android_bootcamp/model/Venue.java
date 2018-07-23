@@ -32,13 +32,14 @@ public class Venue implements Serializable
     private Location location = new Location();
     @Ignore
     @Expose
-    private List<Category> categories = new ArrayList<Category>();
+    private List<Category> categories = new ArrayList<>();
     @ColumnInfo(name = "category_id")
     private int categoryId;
     @ColumnInfo(name = "location_id")
     private int locationId;
 
-    public Venue() {}
+    public Venue() {
+    }
 
     public int getVenueId() {
         return venueId;
@@ -74,10 +75,6 @@ public class Venue implements Serializable
 
     public List<Category> getCategories() {
         return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
     }
 
     public int getCategoryId() {

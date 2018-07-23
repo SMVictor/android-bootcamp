@@ -25,7 +25,7 @@ import java.util.List;
 public class FragmentMap extends SupportMapFragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private List<Venue> venues;
+    private List<Venue> mVenues = new ArrayList<>();
     private VenuesViewModel mVenuesViewModel;
 
     public FragmentMap(){
@@ -37,7 +37,6 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        venues = new ArrayList<>();
         getMapAsync(this);
         return view;
     }
@@ -46,24 +45,25 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
 
         mMap = googleMap;
         mMap.setOnMarkerClickListener(marker -> {
-            for (int i=0; i<venues.size(); i++){
-                if (venues.get(i).getVenueId() ==  (int) marker.getTag()){
+            for (int i = 0; i< mVenues.size(); i++){
+                if (mVenues.get(i).getVenueId() ==  (int) marker.getTag()){
                     Class destinationClass = DetailActivity.class;
                     Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
-                    intentToStartDetailActivity.putExtra("Venue", venues.get(i));
+                    intentToStartDetailActivity.putExtra("Venue", mVenues.get(i));
                     getContext().startActivity(intentToStartDetailActivity);
                 }
             }
             return false;
         });
 
-        MainActivity.mGeoLocation.observeForever(geoLocation -> setInitialLocationMap(geoLocation.get(0),geoLocation.get(1)));
+        MainActivity.sGeoLocation.observeForever(geoLocation ->
+                setInitialLocationMap(geoLocation.get(0),geoLocation.get(1)));
 
         mVenuesViewModel = ViewModelProviders.of(getActivity()).get(VenuesViewModel.class);
         mVenuesViewModel.setContext(getContext());
         mVenuesViewModel.setActivity(getActivity());
         mVenuesViewModel.getVenues().observe(this, venues -> {
-            this.venues = venues;
+            mVenues = venues;
             setPointsInMap();
         });
     }
@@ -78,25 +78,12 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
     }
     public void setPointsInMap()
     {
-        if(venues.size() > 1)
+        for(int i = 0; i < mVenues.size(); i++)
         {
-
-            for(int i = 0; i < venues.size(); i++)
-            {
-                this.mMap.addMarker(new MarkerOptions()
-                        .title(venues.get(i).getName())
-                        .position(new LatLng(venues.get(i).getLocation().getLat(),venues.get(i).getLocation().getLng())))
-                        .setTag(venues.get(i).getVenueId());
-                if(i != (venues.size()-1)){
-                }
-            }
-        }
-        else
-        {
-            this.mMap.addMarker(new MarkerOptions()
-                    .title(venues.get(0).getName())
-                    .position(new LatLng(venues.get(0).getLocation().getLat(),venues.get(0).getLocation().getLng())))
-                    .setTag(venues.get(0).getVenueId());
+            mMap.addMarker(new MarkerOptions()
+                    .title(mVenues.get(i).getName())
+                    .position(new LatLng(mVenues.get(i).getLocation().getLat(), mVenues.get(i).getLocation().getLng())))
+                    .setTag(mVenues.get(i).getVenueId());
         }
     }
 }
