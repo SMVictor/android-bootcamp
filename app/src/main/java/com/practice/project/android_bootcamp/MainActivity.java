@@ -1,19 +1,35 @@
 package com.practice.project.android_bootcamp;
 
+import android.Manifest;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Room;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.practice.project.android_bootcamp.data.VenueDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private ViewPagerAdapter mAdapter;
+    private LocationManager mLocManager;
+    public static MutableLiveData<List<Double>> mGeoLocation;
     public static VenueDatabase mVenuesAppDatabase;
 
 
@@ -22,8 +38,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTabLayout = (TabLayout) findViewById(R.id.principal_tab);
-        mViewPager = (ViewPager) findViewById(R.id.principal_view_pager);
+        mGeoLocation = new MutableLiveData<>();
+        locationStart();
+
+        mTabLayout = findViewById(R.id.principal_tab);
+        mViewPager = findViewById(R.id.principal_view_pager);
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         mVenuesAppDatabase = Room.databaseBuilder(getApplicationContext(), VenueDatabase.class, "venuesdb").allowMainThreadQueries().build();
@@ -42,5 +61,50 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout.getTabAt(1).setIcon(R.drawable.ic_map);
         mTabLayout.getTabAt(0).setIcon(R.drawable.ic_local_activity);
+    }
+
+    /*
+     * To get current location, a resource must be created outside the view model to obtain the venues
+     * */
+    private void locationStart()
+    {
+        //It is verified if the user grants the permissions necessary to use her/his current position.
+        mLocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        final boolean gpsEnabled = mLocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(settingsIntent);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            Toast.makeText(this, "Please proceed to make your request again", Toast.LENGTH_LONG).show();
+            return;
+        }
+        // It is initialized the LocationListener Manager
+        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1000, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                List<Double> geoLocation = new ArrayList<>();
+                geoLocation.add(location.getLatitude());
+                geoLocation.add(location.getLongitude());
+                mGeoLocation.setValue(geoLocation);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
     }
 }
