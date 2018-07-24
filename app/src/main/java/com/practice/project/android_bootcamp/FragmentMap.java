@@ -61,7 +61,6 @@ public class FragmentMap extends SupportMapFragment implements OnMapReadyCallbac
 
         mVenuesViewModel = ViewModelProviders.of(getActivity()).get(VenuesViewModel.class);
         mVenuesViewModel.setContext(getContext());
-        mVenuesViewModel.setActivity(getActivity());
         mVenuesViewModel.getVenues().observe(this, venues -> {
             mVenues = venues;
             setPointsInMap();

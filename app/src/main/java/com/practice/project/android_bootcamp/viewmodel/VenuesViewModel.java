@@ -1,6 +1,5 @@
 package com.practice.project.android_bootcamp.viewmodel;
 
-import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -18,18 +17,10 @@ import java.util.List;
 
 public class VenuesViewModel extends ViewModel {
 
-    private MutableLiveData<List<Venue>> mVenues = new MutableLiveData<>();
+    private MutableLiveData<List<Venue>> mVenues;
     private NetworkUtilities mNetworkUtilities = new NetworkUtilities();
-    private Context mContext;
+    Context mContext;
 
-
-    public void setActivity(Activity activity) {
-        Activity mActivity = activity;
-    }
-
-    public Context getContext() {
-        return mContext;
-    }
 
     public void setContext(Context context) {
         this.mContext = context;
@@ -38,8 +29,10 @@ public class VenuesViewModel extends ViewModel {
 
     public LiveData<List<Venue>> getVenues() {
         if (mVenues == null) {
-            if(mNetworkUtilities.isConnectedToNetwork(getContext())){
-                MainActivity.sGeoLocation.observeForever(geoLocation -> loadVenuesFromFourSquareAPI(geoLocation.get(0)+","+geoLocation.get(1)));
+            mVenues = new MutableLiveData<>();
+
+            if(mNetworkUtilities.isConnectedToNetwork(mContext)){
+                MainActivity.sGeoLocation.observeForever(geoLocation -> loadVenuesFromFourSquareAPI(geoLocation.get(0) + "," + geoLocation.get(1)));
             }
             else {
                 new LoadVenuesFromDatabaseTask().execute();

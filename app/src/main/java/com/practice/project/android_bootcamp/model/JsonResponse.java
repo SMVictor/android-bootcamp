@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class JsonResponse implements Serializable {
 
     @Expose
-    private Response response = new Response();;
+    private Response response = new Response();
 
     public JsonResponse(){
     }
