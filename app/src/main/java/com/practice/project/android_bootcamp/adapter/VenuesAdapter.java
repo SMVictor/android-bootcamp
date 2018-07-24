@@ -10,11 +10,12 @@ import com.practice.project.android_bootcamp.DetailActivity;
 import com.practice.project.android_bootcamp.databinding.VenueBinding;
 import com.practice.project.android_bootcamp.model.Venue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VenuesAdapter extends RecyclerView.Adapter<VenuesAdapter.VenueAdapterViewHolder> {
 
-    private List<Venue> mVenuesData;
+    private List<Venue> mVenuesData = new ArrayList<>();
     private LayoutInflater layoutInflater;
 
     public VenuesAdapter() {
@@ -43,14 +44,11 @@ public class VenuesAdapter extends RecyclerView.Adapter<VenuesAdapter.VenueAdapt
 
         VenueAdapterViewHolder venueAdapterViewHolder = new VenueAdapterViewHolder(venueBinding);
 
-        venueAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Class destinationClass = DetailActivity.class;
-                Intent intentToStartDetailActivity = new Intent(viewGroup.getContext(), destinationClass);
-                intentToStartDetailActivity.putExtra("Venue", mVenuesData.get(venueAdapterViewHolder.getAdapterPosition()));
-                viewGroup.getContext().startActivity(intentToStartDetailActivity);
-            }
+        venueAdapterViewHolder.itemView.setOnClickListener(view -> {
+            Class destinationClass = DetailActivity.class;
+            Intent intentToStartDetailActivity = new Intent(viewGroup.getContext(), destinationClass);
+            intentToStartDetailActivity.putExtra("Venue", mVenuesData.get(venueAdapterViewHolder.getAdapterPosition()));
+            viewGroup.getContext().startActivity(intentToStartDetailActivity);
         });
 
         return venueAdapterViewHolder;
