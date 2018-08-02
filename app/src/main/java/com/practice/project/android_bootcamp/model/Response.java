@@ -9,7 +9,7 @@ import java.util.List;
 public class Response implements Serializable
 {
     @Expose
-    private List<Venue> venues = new ArrayList<Venue>();
+    private List<Venue> venues = new ArrayList<>();
 
     public Response() {}
 
