@@ -22,7 +22,6 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
 
     private final String BASE_URL = "https://api.foursquare.com/v2/";
     private final String API_VERSION = "20130815";
-    private final String RADIUS = "1000";
 
     private String mGeoLocation;
     private MutableLiveData<List<Venue>> mVenues;
@@ -54,7 +53,7 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
 
         FourSquareAPI fourSquareAPI = retrofit.create(FourSquareAPI.class);
 
-        Call<JsonResponse> call = fourSquareAPI.requestSearch(mClientID, mClientSecret, API_VERSION, mGeoLocation, RADIUS);
+        Call<JsonResponse> call = fourSquareAPI.requestSearch(mClientID, mClientSecret, API_VERSION, mGeoLocation);
         call.enqueue(this);
     }
     @Override

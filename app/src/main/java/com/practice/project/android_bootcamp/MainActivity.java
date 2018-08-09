@@ -19,6 +19,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.practice.project.android_bootcamp.data.VenueDatabase;
+import com.uber.sdk.android.core.UberSdk;
+import com.uber.sdk.rides.client.ServerTokenSession;
+import com.uber.sdk.rides.client.SessionConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager mLocManager;
     public static VenueDatabase sVenuesAppDatabase;
     public static MutableLiveData<List<Double>> sGeoLocation = new MutableLiveData<>();
+    public static ServerTokenSession sSession;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        locationStart();
 
         mTabLayout = findViewById(R.id.principal_tab);
         mViewPager = findViewById(R.id.principal_view_pager);
@@ -48,7 +51,20 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setElevation(0);
 
+        locationStart();
         createFragments();
+        uberSDKInitialize();
+    }
+
+    private void uberSDKInitialize() {
+        SessionConfiguration config = new SessionConfiguration.Builder()
+                .setClientId("toRSbNh4KmgO7YtHXe4fjRYOfQrfn6bO")
+                .setServerToken("QO6Xhtm1jJkk1muoLeF2GAWDrKKV_oAmRRGYX_i9")
+                .setEnvironment(SessionConfiguration.Environment.SANDBOX)
+                .build();
+        UberSdk.initialize(config);
+
+        sSession = new ServerTokenSession(config);
     }
 
     private void createFragments() {

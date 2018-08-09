@@ -113,8 +113,13 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
+                <com.uber.sdk.android.rides.RideRequestButton
+                    android:id="@+id/uberButtonOnVenueDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"/>
 
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
@@ -127,6 +132,6 @@
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
         app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|right|end"
-        />
+        app:layout_anchorGravity="bottom|right|end" />
+
 </android.support.design.widget.CoordinatorLayout>

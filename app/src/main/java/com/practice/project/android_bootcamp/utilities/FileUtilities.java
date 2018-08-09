@@ -13,7 +13,7 @@ import java.util.List;
 public class FileUtilities {
 
     private Context mContext;
-    private List<String> fourSquareFileData = new ArrayList<>();
+    private List<String> mFourSquareFileData = new ArrayList<>();
 
     public FileUtilities(Context context) {
         mContext = context;
@@ -27,17 +27,12 @@ public class FileUtilities {
         String data;
 
         if (is != null){
-
             try {
-
                 while ((data = reader.readLine()) != null){
-
-                    fourSquareFileData.add(data);
+                    mFourSquareFileData.add(data);
                 }
                 is.close();
-
             }catch (Exception e){
-
                 e.printStackTrace();
             }
         }
@@ -47,14 +42,13 @@ public class FileUtilities {
 
         String value = "";
 
-        for (String data : fourSquareFileData) {
+        for (String data : mFourSquareFileData) {
             if (data.contains(dataName)){
                 String[] split = data.split(":");
                 value = split[1];
                 break;
             }
         }
-
         return value;
     }
 }
