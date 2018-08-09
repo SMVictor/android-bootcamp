@@ -1,6 +1,7 @@
 package com.practice.project.android_bootcamp.utilities;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,16 +20,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FourSquareAPIController implements Callback<JsonResponse>{
 
-    /**
-     * Preguntar a Raúl si es necesario cargar esto desde archivos
-     * */
-    private static final String BASE_URL = "https://api.foursquare.com/v2/";
-    private static final String CLIENT_ID = "DJS3YIF02PXN1VHITVGRS3Q43X0XOUZ1R1QDLPCLF4ZYWYBI";
-    private static final String CLIENT_SECRET = "XQUKOG2D00ZIQZ0OB4XNB3TEYGTVDRGDHS343IHVATP5GBEA";
-    private static final String API_VERSION = "20130815";
-    private static final String RADIUS = "1000";
+    private final String BASE_URL = "https://api.foursquare.com/v2/";
+    private final String API_VERSION = "20130815";
+
     private String mGeoLocation;
     private MutableLiveData<List<Venue>> mVenues;
+    private Context mContext;
+    private FileUtilities mFileUtilities;
+    private String mClientID;
+    private String mClientSecret;
+
+    public FourSquareAPIController(String geoLocation, MutableLiveData<List<Venue>> venues, Context context) {
+        mGeoLocation = geoLocation;
+        mVenues = venues;
+        mContext = context;
+
+        mFileUtilities = new FileUtilities(mContext);
+        mClientID = mFileUtilities.getFourSquareData("CLIENT_ID");
+        mClientSecret = mFileUtilities.getFourSquareData("CLIENT_SECRET");
+    }
 
     public void start() {
 
@@ -43,7 +53,7 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
 
         FourSquareAPI fourSquareAPI = retrofit.create(FourSquareAPI.class);
 
-        Call<JsonResponse> call = fourSquareAPI.requestSearch(CLIENT_ID, CLIENT_SECRET, API_VERSION, mGeoLocation, RADIUS);
+        Call<JsonResponse> call = fourSquareAPI.requestSearch(mClientID, mClientSecret, API_VERSION, mGeoLocation);
         call.enqueue(this);
     }
     @Override
@@ -79,12 +89,5 @@ public class FourSquareAPIController implements Callback<JsonResponse>{
     @Override
     public void onFailure(Call<JsonResponse> call, Throwable t) {
         t.printStackTrace();
-    }
-
-    public void setGeoLocation(String geoLocation) {
-        this.mGeoLocation = geoLocation;
-    }
-    public void setVenues(MutableLiveData<List<Venue>> venues) {
-        this.mVenues = venues;
     }
 }

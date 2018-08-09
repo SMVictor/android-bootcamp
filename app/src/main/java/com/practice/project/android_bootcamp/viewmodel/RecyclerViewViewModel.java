@@ -7,11 +7,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.practice.project.android_bootcamp.MainActivity;
 import com.practice.project.android_bootcamp.adapter.VenuesAdapter;
 import com.practice.project.android_bootcamp.model.Category;
 import com.practice.project.android_bootcamp.model.Venue;
+import com.practice.project.android_bootcamp.utilities.FileUtilities;
 import com.practice.project.android_bootcamp.utilities.FourSquareAPIController;
 import com.practice.project.android_bootcamp.utilities.NetworkUtilities;
 
@@ -49,9 +51,7 @@ public class RecyclerViewViewModel extends ViewModel {
     }
 
     private void loadVenues(String geoLocation) {
-        FourSquareAPIController fourSquareAPIController = new FourSquareAPIController();
-        fourSquareAPIController.setGeoLocation(geoLocation);
-        fourSquareAPIController.setVenues(mVenues);
+        FourSquareAPIController fourSquareAPIController = new FourSquareAPIController(geoLocation, mVenues, mContext);
         fourSquareAPIController.start();
     }
 

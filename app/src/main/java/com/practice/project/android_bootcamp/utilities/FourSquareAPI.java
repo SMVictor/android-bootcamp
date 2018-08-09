@@ -13,6 +13,5 @@ public interface FourSquareAPI {
             @Query("client_id") String client_id,
             @Query("client_secret") String client_secret,
             @Query("v") String v,
-            @Query("ll") String ll,
-            @Query("radius") String radius);
+            @Query("ll") String ll);
 }

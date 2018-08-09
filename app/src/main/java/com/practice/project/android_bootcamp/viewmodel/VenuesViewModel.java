@@ -19,13 +19,12 @@ public class VenuesViewModel extends ViewModel {
 
     private MutableLiveData<List<Venue>> mVenues;
     private NetworkUtilities mNetworkUtilities = new NetworkUtilities();
-    Context mContext;
+    private Context mContext;
 
 
     public void setContext(Context context) {
         this.mContext = context;
     }
-
 
     public LiveData<List<Venue>> getVenues() {
         if (mVenues == null) {
@@ -42,9 +41,7 @@ public class VenuesViewModel extends ViewModel {
     }
 
     private void loadVenuesFromFourSquareAPI(String geoLocation) {
-        FourSquareAPIController fourSquareAPIController = new FourSquareAPIController();
-        fourSquareAPIController.setGeoLocation(geoLocation);
-        fourSquareAPIController.setVenues(mVenues);
+        FourSquareAPIController fourSquareAPIController = new FourSquareAPIController(geoLocation, mVenues, mContext);
         fourSquareAPIController.start();
     }
 
